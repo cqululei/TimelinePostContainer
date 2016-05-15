@@ -1,10 +1,4 @@
-# TimelinePostContainer
-
-[![Platform](https://img.shields.io/badge/platform-android-brightgreen.svg)](http://developer.android.com/index.html)
-[![Compatibility](https://img.shields.io/badge/compatibility-API%2016%2B-green.svg)](https://android-arsenal.com/api?level=16)
-[![Release](https://jitpack.io/v/alirezaaa/TimelinePostContainer.svg)](https://jitpack.io/#alirezaaa/TimelinePostContainer)
-[![Codacy](https://api.codacy.com/project/badge/grade/ffa490a98def457e8cac302b33c9d89c)](https://www.codacy.com/app/aesshoferi/TimelinePostContainer)
-[![License](https://img.shields.io/badge/license-apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+# TimelinePostContainer [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EasyIntro-green.svg?style=true)](https://android-arsenal.com/details/1/3266) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ffa490a98def457e8cac302b33c9d89c)](https://www.codacy.com/app/aesshoferi/TimelinePostContainer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alirezaaa/TimelinePostContainer&amp;utm_campaign=Badge_Grade) [![Gitter](https://badges.gitter.im/meNESS/TimelinePostContainer.svg)](https://gitter.im/meNESS/TimelinePostContainer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Timeline is a famous and user-friendly feature these days; If you need to implement one of them in your projects, consider using this library. Tried to have simple methods, currently you just need to write three lines of codes!
 
