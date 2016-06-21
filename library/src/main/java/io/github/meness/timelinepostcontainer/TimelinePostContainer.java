@@ -62,10 +62,29 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         initProperties();
     }
 
+    private void initProperties() {
+        mGestureDetector = new GestureDetector(getContext(), new GestureListener());
+    }
+
     public TimelinePostContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
         initAttrs(attrs);
         initProperties();
+    }
+
+    private void initAttrs(AttributeSet attrs) {
+        TypedArray customTypedArray = getContext().obtainStyledAttributes(attrs, R.styleable.TimelinePostContainer);
+
+        mOptions.drawablesAnimation = AnimationUtils.loadAnimation(getContext(), customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_drawablesAnim, R.anim.foreground));
+        mOptions.looping = customTypedArray.getBoolean(R.styleable.TimelinePostContainer_tpc_looping, true);
+        mOptions.keepScreenOnWhilePlaying = customTypedArray.getBoolean(R.styleable.TimelinePostContainer_tpc_keepOnScreen, true);
+        mOptions.debug = customTypedArray.getBoolean(R.styleable.TimelinePostContainer_tpc_debug, false);
+        mOptions.setPlayDrawable(customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_playDrawable, R.drawable.ic_play_circle_filled_black_24dp));
+        mOptions.setPauseDrawable(customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_pauseDrawable, R.drawable.ic_pause_circle_filled_black_24dp));
+        mOptions.setVideoLoadingView(customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_videoLoading, R.layout.video_loading));
+        mOptions.setImageLoadingView(customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_imageLoading, R.layout.image_loading));
+
+        customTypedArray.recycle();
     }
 
     public TimelinePostContainer(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -89,25 +108,6 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     public TimelinePostContainer setOptions(Options options) {
         mOptions = options;
         return this;
-    }
-
-    private void initProperties() {
-        mGestureDetector = new GestureDetector(getContext(), new GestureListener());
-    }
-
-    private void initAttrs(AttributeSet attrs) {
-        TypedArray customTypedArray = getContext().obtainStyledAttributes(attrs, R.styleable.TimelinePostContainer);
-
-        mOptions.drawablesAnimation = AnimationUtils.loadAnimation(getContext(), customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_drawablesAnim, R.anim.foreground));
-        mOptions.looping = customTypedArray.getBoolean(R.styleable.TimelinePostContainer_tpc_looping, true);
-        mOptions.keepScreenOnWhilePlaying = customTypedArray.getBoolean(R.styleable.TimelinePostContainer_tpc_keepOnScreen, true);
-        mOptions.debug = customTypedArray.getBoolean(R.styleable.TimelinePostContainer_tpc_debug, false);
-        mOptions.setPlayDrawable(customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_playDrawable, R.drawable.ic_play_circle_filled_black_24dp));
-        mOptions.setPauseDrawable(customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_pauseDrawable, R.drawable.ic_pause_circle_filled_black_24dp));
-        mOptions.setVideoLoadingView(customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_videoLoading, R.layout.video_loading));
-        mOptions.setImageLoadingView(customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_imageLoading, R.layout.image_loading));
-
-        customTypedArray.recycle();
     }
 
     public void build(Type type) {
@@ -152,48 +152,19 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         return mImageView;
     }
 
-    private void addTryAgainView() {
-        final TextView view = createExplanatoryView(R.string.unable_load_image);
-        view.setClickable(true);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeView(view);
-                displayImage();
-            }
-        });
-        addView(view);
-    }
-
-    private TextView createExplanatoryView(@StringRes int text) {
-        removeImageLoadingView();
-
-        TextView textView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.explanatory_view, this, false);
-        textView.setText(text);
-
-        return textView;
-    }
-
-    private void showImageLoadingView() {
-        if (mOptions.imageLoadingView == null) {
-            mOptions.imageLoadingView = AndroidUtils.createImageLoading(getContext(), this);
-        }
-
-        if (mOptions.imageLoadingView.getParent() == null) {
-            addView(mOptions.imageLoadingView);
-        }
-    }
-
-    private void unablePlayVideo() {
-        addView(createExplanatoryView(R.string.unable_play_video));
-    }
-
     private void displayImage() {
         mOptions.imageLoader.displayImage(mImagePath, mImageView, null, this, this);
     }
 
     public Type getType() {
         return mType;
+    }    private TextView createExplanatoryView(@StringRes int text) {
+        removeImageLoadingView();
+
+        TextView textView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.explanatory_view, this, false);
+        textView.setText(text);
+
+        return textView;
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -206,6 +177,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
     public String getImagePath() {
         return mImagePath;
+    }    private void unablePlayVideo() {
+        addView(createExplanatoryView(R.string.unable_play_video));
     }
 
     public TimelinePostContainer setImagePath(String imagePath) {
@@ -247,9 +220,32 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         return true;
     }
 
+    @Override
+    public boolean onImageTouch(View v, MotionEvent event) {
+        return (mType == Type.IMAGE) && mGestureDetector.onTouchEvent(event);
+    }
+
     private void removeImageLoadingView() {
         if (mOptions.imageLoadingView != null) {
             removeView(mOptions.imageLoadingView);
+        }
+    }
+
+    private void showPauseDrawable() {
+        ImageView view = (ImageView) findViewById(R.id.foreground);
+        if (view != null) {
+            view.setImageDrawable(mOptions.pauseDrawable);
+            view.startAnimation(mOptions.drawablesAnimation);
+        }
+    }
+
+    private void stopPreviousVideo() {
+        if (mPreviousVideoView != null) {
+            mPreviousVideoView.pause();
+            TimelinePostContainer parentLayout = (TimelinePostContainer) mPreviousVideoView.getParent();
+            if (parentLayout != null) {
+                parentLayout.showPauseDrawable();
+            }
         }
     }
 
@@ -265,21 +261,76 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         }
     }
 
-    private void stopPreviousVideo() {
-        if (mPreviousVideoView != null) {
-            mPreviousVideoView.pause();
-            TimelinePostContainer parentLayout = (TimelinePostContainer) mPreviousVideoView.getParent();
-            if (parentLayout != null) {
-                parentLayout.showPauseDrawable();
+    @Override
+    public void prepareVideo(View v) {
+        // prevents from preparing the video multiple times by multiple clicking on the image.
+        v.setOnClickListener(null);
+
+        showPlayDrawable();
+        showVideoLoading();
+
+        final VideoView videoView = (VideoView) LayoutInflater.from(getContext()).inflate(R.layout.video_view, this, false);
+        videoView.setVideoPath(mVideoPath);
+        videoView.setKeepScreenOn(mOptions.keepScreenOnWhilePlaying);
+        videoView.setOnTouchListener(this);
+
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                unablePlayVideo();
+                return true;
             }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                @Override
+                public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                    if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                        removeImageLoadingView();
+                        removeImage();
+                    }
+                    return false;
+                }
+            });
+        }
+
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setOnBufferingUpdateListener(TimelinePostContainer.this);
+                mp.setOnCompletionListener(TimelinePostContainer.this);
+                mp.setLooping(mOptions.looping);
+
+                mPreviousVideoView = mCurrentVideoView;
+                mCurrentVideoView = videoView;
+
+                stopPreviousVideo();
+
+                mp.start();
+            }
+        });
+
+        addView(videoView, 0);
+
+        if (mListeners.listener != null) {
+            mListeners.listener.onVideoCreate(videoView);
         }
     }
 
-    private void showPauseDrawable() {
-        ImageView view = (ImageView) findViewById(R.id.foreground);
-        if (view != null) {
-            view.setImageDrawable(mOptions.pauseDrawable);
-            view.startAnimation(mOptions.drawablesAnimation);
+    @Override
+    public void onVideoTouch(View v, MotionEvent event) {
+        if (((MediaController.MediaPlayerControl) v).isPlaying()) {
+            ((MediaController.MediaPlayerControl) v).pause();
+            removeImageLoadingView();
+            showPauseDrawable();
+        } else {
+            mPreviousVideoView = mCurrentVideoView;
+            mCurrentVideoView = ((VideoView) v);
+            stopPreviousVideo();
+
+            showPlayDrawable();
+            mCurrentVideoView.start();
         }
     }
 
@@ -358,6 +409,19 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     }
 
     @Override
+    public void onProgressUpdate(String s, View view, int i, int i1) {
+        int progress = (360 * i) / i1;
+        mOptions.imageLoadingView.setProgress(progress);
+
+        if (mListeners.imageLoading != null) {
+            mListeners.imageLoading.onProgressUpdate(s, mOptions.imageLoadingView, view, i, i1);
+        }
+    }
+
+    @Override
+    public void onLoadingStarted(String s, View view) {
+        showImageLoadingView();
+    }    @Override
     public void onClick(View v) {
         if (v instanceof ImageView) {
             // clicking on try again plays the video, this workaround prevents that.
@@ -375,103 +439,33 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         }
     }
 
-    @Override
-    public void onProgressUpdate(String s, View view, int i, int i1) {
-        int progress = (360 * i) / i1;
-        mOptions.imageLoadingView.setProgress(progress);
-
-        if (mListeners.imageLoading != null) {
-            mListeners.imageLoading.onProgressUpdate(s, mOptions.imageLoadingView, view, i, i1);
-        }
-    }
-
-    @Override
-    public boolean onImageTouch(View v, MotionEvent event) {
-        return (mType == Type.IMAGE) && mGestureDetector.onTouchEvent(event);
-    }
-
-    @Override
-    public void prepareVideo(View v) {
-        // prevents from preparing the video multiple times by multiple clicking on the image.
-        v.setOnClickListener(null);
-
-        showPlayDrawable();
-        showVideoLoading();
-
-        final VideoView videoView = (VideoView) LayoutInflater.from(getContext()).inflate(R.layout.video_view, this, false);
-        videoView.setVideoPath(mVideoPath);
-        videoView.setKeepScreenOn(mOptions.keepScreenOnWhilePlaying);
-        videoView.setOnTouchListener(this);
-
-        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                unablePlayVideo();
-                return true;
-            }
-        });
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-                @Override
-                public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                    if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                        removeImageLoadingView();
-                        removeImage();
-                    }
-                    return false;
-                }
-            });
+    private void showImageLoadingView() {
+        if (mOptions.imageLoadingView == null) {
+            mOptions.imageLoadingView = AndroidUtils.createImageLoading(getContext(), this);
         }
 
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setOnBufferingUpdateListener(TimelinePostContainer.this);
-                mp.setOnCompletionListener(TimelinePostContainer.this);
-                mp.setLooping(mOptions.looping);
-
-                mPreviousVideoView = mCurrentVideoView;
-                mCurrentVideoView = videoView;
-
-                stopPreviousVideo();
-
-                mp.start();
-            }
-        });
-
-        addView(videoView, 0);
-
-        if (mListeners.listener != null) {
-            mListeners.listener.onVideoCreate(videoView);
+        if (mOptions.imageLoadingView.getParent() == null) {
+            addView(mOptions.imageLoadingView);
         }
-    }
-
-    @Override
-    public void onVideoTouch(View v, MotionEvent event) {
-        if (((MediaController.MediaPlayerControl) v).isPlaying()) {
-            ((MediaController.MediaPlayerControl) v).pause();
-            removeImageLoadingView();
-            showPauseDrawable();
-        } else {
-            mPreviousVideoView = mCurrentVideoView;
-            mCurrentVideoView = ((VideoView) v);
-            stopPreviousVideo();
-
-            showPlayDrawable();
-            mCurrentVideoView.start();
-        }
-    }
-
-    @Override
-    public void onLoadingStarted(String s, View view) {
-        showImageLoadingView();
     }
 
     @Override
     public void onLoadingFailed(String s, View view, FailReason failReason) {
         removeImageLoadingView();
         addTryAgainView();
+    }
+
+    private void addTryAgainView() {
+        final TextView view = createExplanatoryView(R.string.unable_load_image);
+        view.setClickable(true);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeView(view);
+                displayImage();
+            }
+        });
+        addView(view);
     }
 
     @Override
@@ -512,4 +506,10 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
             return super.onSingleTapConfirmed(e);
         }
     }
+
+
+
+
+
+
 }

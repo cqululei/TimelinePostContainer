@@ -60,16 +60,8 @@ public class Options {
         setImageLoadingView(R.layout.image_loading);
     }
 
-    public final Options setVideoLoadingView(@LayoutRes int videoLoadingLayout) {
-        View view = LayoutInflater.from(mContext).inflate(videoLoadingLayout, mViewGroup, false);
-        if (AndroidUtils.isInstanceOf(view, AVLoadingIndicatorView.class, mContext.getResources())) {
-            videoLoadingView = (AVLoadingIndicatorView) view;
-        }
-        return this;
-    }
-
-    public final Options setDrawablesAnimation(@AnimRes int res) {
-        drawablesAnimation = AnimationUtils.loadAnimation(mContext, res);
+    public final Options setPlayDrawable(@DrawableRes int res) {
+        playDrawable = AndroidUtils.getDrawable(mContext, res);
         return this;
     }
 
@@ -78,8 +70,16 @@ public class Options {
         return this;
     }
 
-    public final Options setPlayDrawable(@DrawableRes int res) {
-        playDrawable = AndroidUtils.getDrawable(mContext, res);
+    public final Options setDrawablesAnimation(@AnimRes int res) {
+        drawablesAnimation = AnimationUtils.loadAnimation(mContext, res);
+        return this;
+    }
+
+    public final Options setVideoLoadingView(@LayoutRes int videoLoadingLayout) {
+        View view = LayoutInflater.from(mContext).inflate(videoLoadingLayout, mViewGroup, false);
+        if (AndroidUtils.isInstanceOf(view, AVLoadingIndicatorView.class, mContext.getResources())) {
+            videoLoadingView = (AVLoadingIndicatorView) view;
+        }
         return this;
     }
 
