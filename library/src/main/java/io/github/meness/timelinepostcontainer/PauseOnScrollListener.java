@@ -69,8 +69,8 @@ public class PauseOnScrollListener implements AbsListView.OnScrollListener {
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        switch (scrollState) {
+    public void onScrollStateChanged(AbsListView absListView, int i) {
+        switch (i) {
             case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
                 imageLoader.resume();
                 break;
@@ -89,14 +89,14 @@ public class PauseOnScrollListener implements AbsListView.OnScrollListener {
                 break;
         }
         if (externalListener != null) {
-            externalListener.onScrollStateChanged(view, scrollState);
+            externalListener.onScrollStateChanged(absListView, i);
         }
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+    public void onScroll(AbsListView absListView, int i, int i1, int i2) {
         if (externalListener != null) {
-            externalListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+            externalListener.onScroll(absListView, i, i1, i2);
         }
     }
 }

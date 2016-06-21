@@ -208,13 +208,13 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (v instanceof ImageView) {
-            return onImageTouch(v, event);
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (view instanceof ImageView) {
+            return onImageTouch(view, motionEvent);
         }
 
-        if ((v instanceof VideoView) && (event.getAction() == MotionEvent.ACTION_UP)) {
-            onVideoTouch(v, event);
+        if ((view instanceof VideoView) && (motionEvent.getAction() == MotionEvent.ACTION_UP)) {
+            onVideoTouch(view, motionEvent);
         }
 
         return true;
@@ -276,7 +276,7 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
         videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
+            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
                 unablePlayVideo();
                 return true;
             }
@@ -285,8 +285,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
                 @Override
-                public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                    if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                public boolean onInfo(MediaPlayer mediaPlayer, int i, int i1) {
+                    if (i == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                         removeImageLoadingView();
                         removeImage();
                     }
@@ -297,17 +297,17 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setOnBufferingUpdateListener(TimelinePostContainer.this);
-                mp.setOnCompletionListener(TimelinePostContainer.this);
-                mp.setLooping(mOptions.looping);
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.setOnBufferingUpdateListener(TimelinePostContainer.this);
+                mediaPlayer.setOnCompletionListener(TimelinePostContainer.this);
+                mediaPlayer.setLooping(mOptions.looping);
 
                 mPreviousVideoView = mCurrentVideoView;
                 mCurrentVideoView = videoView;
 
                 stopPreviousVideo();
 
-                mp.start();
+                mediaPlayer.start();
             }
         });
 
@@ -335,23 +335,23 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     }
 
     @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+    public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
         // this is a workaround because API 16 doesn't support setOnInfoListener()
         if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) && isImageViewExists()) {
             removeVideoLoadingView();
             removeImage();
         }
 
-        if (percent == 100) {
+        if (i == 100) {
             removeVideoLoadingView();
             return;
         }
 
-        int duration = mp.getCurrentPosition();
+        int duration = mediaPlayer.getCurrentPosition();
 
-        if ((duration == lastPlaybackPosition) && mp.isPlaying()) {
+        if ((duration == lastPlaybackPosition) && mediaPlayer.isPlaying()) {
             showVideoLoading();
-        } else if (mp.isPlaying()) {
+        } else if (mediaPlayer.isPlaying()) {
             removeVideoLoadingView();
         }
         lastPlaybackPosition = duration;
@@ -401,7 +401,7 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     }
 
     @Override
-    public void onCompletion(MediaPlayer mp) {
+    public void onCompletion(MediaPlayer mediaPlayer) {
         removeImageLoadingView();
         if (!mOptions.looping) {
             showPlayDrawable();
@@ -422,19 +422,19 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     public void onLoadingStarted(String s, View view) {
         showImageLoadingView();
     }    @Override
-    public void onClick(View v) {
-        if (v instanceof ImageView) {
+    public void onClick(View view) {
+        if (view instanceof ImageView) {
             // clicking on try again plays the video, this workaround prevents that.
-            if (((ImageView) v).getDrawable() == null) {
+            if (((ImageView) view).getDrawable() == null) {
                 return;
             }
 
             if (mType == Type.VIDEO) {
-                prepareVideo(v);
+                prepareVideo(view);
             }
 
             if (mListeners.imageClick != null) {
-                mListeners.imageClick.onImageClick(v, mType);
+                mListeners.imageClick.onImageClick(view, mType);
             }
         }
     }
@@ -460,7 +460,7 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         view.setClickable(true);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 removeView(view);
                 displayImage();
             }
