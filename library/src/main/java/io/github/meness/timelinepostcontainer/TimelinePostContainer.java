@@ -180,13 +180,6 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
     public Type getType() {
         return mType;
-    }    private TextView createExplanatoryView(@StringRes int text) {
-        removeImageLoadingView();
-
-        TextView textView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.explanatory_view, this, false);
-        textView.setText(text);
-
-        return textView;
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -199,8 +192,6 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
     public String getImagePath() {
         return mImagePath;
-    }    private void unablePlayVideo() {
-        addView(createExplanatoryView(R.string.unable_play_video));
     }
 
     public TimelinePostContainer setImagePath(String imagePath) {
@@ -443,22 +434,6 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     @Override
     public void onLoadingStarted(String s, View view) {
         showImageLoadingView();
-    }    @Override
-    public void onClick(View view) {
-        if (view instanceof ImageView) {
-            // clicking on try again plays the video, this workaround prevents that.
-            if (((ImageView) view).getDrawable() == null) {
-                return;
-            }
-
-            if (mType == Type.VIDEO) {
-                prepareVideo(view);
-            }
-
-            if (mImageClickListener != null) {
-                mImageClickListener.onImageClick(view, mType);
-            }
-        }
     }
 
     private void showImageLoadingView() {
@@ -509,6 +484,37 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         // empty, intentional
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view instanceof ImageView) {
+            // clicking on try again plays the video, this workaround prevents that.
+            if (((ImageView) view).getDrawable() == null) {
+                return;
+            }
+
+            if (mType == Type.VIDEO) {
+                prepareVideo(view);
+            }
+
+            if (mImageClickListener != null) {
+                mImageClickListener.onImageClick(view, mType);
+            }
+        }
+    }
+
+    private void unablePlayVideo() {
+        addView(createExplanatoryView(R.string.unable_play_video));
+    }
+
+    private TextView createExplanatoryView(@StringRes int text) {
+        removeImageLoadingView();
+
+        TextView textView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.explanatory_view, this, false);
+        textView.setText(text);
+
+        return textView;
+    }
+
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
@@ -521,17 +527,13 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (mTapListener!= null) {
+            if (mTapListener != null) {
                 mTapListener.onSingleTap(e, mType);
             }
 
             return super.onSingleTapConfirmed(e);
         }
     }
-
-
-
-
 
 
 }
