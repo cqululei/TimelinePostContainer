@@ -41,6 +41,10 @@ import android.widget.VideoView;
 
 import com.nostra13.universalimageloader.core.assist.FailReason;
 
+import io.github.meness.timelinepostcontainer.interfaces.IImageClickListener;
+import io.github.meness.timelinepostcontainer.interfaces.IImageLoadingListener;
+import io.github.meness.timelinepostcontainer.interfaces.ITapListener;
+
 public class TimelinePostContainer extends FrameLayout implements IListener, View.OnClickListener, View.OnTouchListener {
 
     // previous and current video view fields must be static
@@ -52,7 +56,10 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     private String mImagePath;
     private String mVideoPath;
     private ImageView mImageView;
-    private Listeners mListeners = new Listeners();
+    private IImageClickListener mImageClickListener;
+    private IImageLoadingListener mImageLoadingListener;
+    private io.github.meness.timelinepostcontainer.interfaces.IListener mListener;
+    private ITapListener mTapListener;
     private Type mType;
     @IdRes
     private int mImageId;
@@ -100,8 +107,23 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         initProperties();
     }
 
-    public TimelinePostContainer setListeners(Listeners listeners) {
-        mListeners = listeners;
+    public TimelinePostContainer setImageClickListener(IImageClickListener listeners) {
+        mImageClickListener = listeners;
+        return this;
+    }
+
+    public TimelinePostContainer setImageLoadingListener(IImageLoadingListener listeners) {
+        mImageLoadingListener = listeners;
+        return this;
+    }
+
+    public TimelinePostContainer setListener(io.github.meness.timelinepostcontainer.interfaces.IListener listeners) {
+        mListener = listeners;
+        return this;
+    }
+
+    public TimelinePostContainer setTapListener(ITapListener listeners) {
+        mTapListener = listeners;
         return this;
     }
 
@@ -133,8 +155,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
             addView(view, 0);
         }
 
-        if (mListeners.listener != null) {
-            mListeners.listener.onImageCreate(view);
+        if (mListener != null) {
+            mListener.onImageCreate(view);
         }
 
         if (mOptions.debug) {
@@ -313,8 +335,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
         addView(videoView, 0);
 
-        if (mListeners.listener != null) {
-            mListeners.listener.onVideoCreate(videoView);
+        if (mListener != null) {
+            mListener.onVideoCreate(videoView);
         }
     }
 
@@ -382,8 +404,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
                             removeView(view);
 
-                            if (mListeners.listener != null) {
-                                mListeners.listener.onImageRemove(animation);
+                            if (mListener != null) {
+                                mListener.onImageRemove(animation);
                             }
                         }
                     });
@@ -413,8 +435,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         int progress = (360 * i) / i1;
         mOptions.imageLoadingView.setProgress(progress);
 
-        if (mListeners.imageLoading != null) {
-            mListeners.imageLoading.onProgressUpdate(s, mOptions.imageLoadingView, view, i, i1);
+        if (mImageLoadingListener != null) {
+            mImageLoadingListener.onProgressUpdate(s, mOptions.imageLoadingView, view, i, i1);
         }
     }
 
@@ -433,8 +455,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
                 prepareVideo(view);
             }
 
-            if (mListeners.imageClick != null) {
-                mListeners.imageClick.onImageClick(view, mType);
+            if (mImageClickListener != null) {
+                mImageClickListener.onImageClick(view, mType);
             }
         }
     }
@@ -490,8 +512,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            if (mListeners.tap != null) {
-                mListeners.tap.onDoubleTap(e, mType);
+            if (mTapListener != null) {
+                mTapListener.onDoubleTap(e, mType);
             }
 
             return super.onDoubleTap(e);
@@ -499,8 +521,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (mListeners.tap != null) {
-                mListeners.tap.onSingleTap(e, mType);
+            if (mTapListener!= null) {
+                mTapListener.onSingleTap(e, mType);
             }
 
             return super.onSingleTapConfirmed(e);
