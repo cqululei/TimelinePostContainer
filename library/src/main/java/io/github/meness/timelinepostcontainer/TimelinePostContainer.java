@@ -456,7 +456,7 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     }
 
     private void addTryAgainView() {
-        final TextView view = createExplanatoryView(R.string.unable_load_image);
+        TextView view = createExplanatoryView(R.string.unable_load_image);
         view.setClickable(true);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
