@@ -34,8 +34,8 @@ public class SampleOneActivity extends AppCompatActivity {
         setContentView(R.layout.item);
         ButterKnife.bind(this);
 
-        timelinePostContainer.setImagePath("http://collectup.blob.core.windows.net/images/420e969d-3fef-48cf-a968-f79945a5ed85.jpg");
-        timelinePostContainer.setVideoPath("http://collectup.blob.core.windows.net/videos/ff59ab2e-d14e-4f0e-b585-e36bd72649bd.mp4");
+        timelinePostContainer.setImagePath("https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=600&h=600");
+        timelinePostContainer.setVideoPath("http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_2mb.mp4");
         timelinePostContainer.build(Type.VIDEO);
     }
 }
