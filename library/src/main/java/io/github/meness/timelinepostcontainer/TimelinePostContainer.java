@@ -24,8 +24,10 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.support.annotation.AttrRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
+import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -75,12 +77,12 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
     public TimelinePostContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initAttrs(attrs);
+        initAttrs(context,attrs,0,0);
         initProperties();
     }
 
-    private void initAttrs(AttributeSet attrs) {
-        TypedArray customTypedArray = getContext().obtainStyledAttributes(attrs, R.styleable.TimelinePostContainer);
+    private void initAttrs(Context context, AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
+        TypedArray customTypedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TimelinePostContainer, defStyleAttr, defStyleRes);
 
         mOptions.drawablesAnimation = AnimationUtils.loadAnimation(getContext(), customTypedArray.getResourceId(R.styleable.TimelinePostContainer_tpc_drawablesAnim, R.anim.foreground));
         mOptions.looping = customTypedArray.getBoolean(R.styleable.TimelinePostContainer_tpc_looping, true);
@@ -96,14 +98,14 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
     public TimelinePostContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initAttrs(attrs);
+        initAttrs(context, attrs,defStyleAttr,0);
         initProperties();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TimelinePostContainer(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        initAttrs(attrs);
+        initAttrs(context,attrs,defStyleAttr,defStyleRes);
         initProperties();
     }
 
