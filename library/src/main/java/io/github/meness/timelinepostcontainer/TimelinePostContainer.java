@@ -77,7 +77,7 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
     public TimelinePostContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initAttrs(context,attrs,0,0);
+        initAttrs(context, attrs, 0, 0);
         initProperties();
     }
 
@@ -98,14 +98,14 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
     public TimelinePostContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initAttrs(context, attrs,defStyleAttr,0);
+        initAttrs(context, attrs, defStyleAttr, 0);
         initProperties();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TimelinePostContainer(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        initAttrs(context,attrs,defStyleAttr,defStyleRes);
+        initAttrs(context, attrs, defStyleAttr, defStyleRes);
         initProperties();
     }
 
@@ -467,6 +467,15 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         addView(view);
     }
 
+    private TextView createExplanatoryView(@StringRes int text) {
+        removeImageLoadingView();
+
+        TextView textView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.explanatory_view, this, false);
+        textView.setText(text);
+
+        return textView;
+    }
+
     @Override
     public void onLoadingComplete(String s, View view, Bitmap bitmap) {
         if (mType == Type.VIDEO) {
@@ -484,9 +493,7 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     @Override
     public void onLoadingCancelled(String s, View view) {
         // empty, intentional
-    }
-
-    @Override
+    }    @Override
     public void onClick(View view) {
         if (view instanceof ImageView) {
             // clicking on try again plays the video, this workaround prevents that.
@@ -502,19 +509,6 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
                 mImageClickListener.onImageClick(view, mType);
             }
         }
-    }
-
-    private void unablePlayVideo() {
-        addView(createExplanatoryView(R.string.unable_play_video));
-    }
-
-    private TextView createExplanatoryView(@StringRes int text) {
-        removeImageLoadingView();
-
-        TextView textView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.explanatory_view, this, false);
-        textView.setText(text);
-
-        return textView;
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -535,7 +529,13 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
             return super.onSingleTapConfirmed(e);
         }
+    }    private void unablePlayVideo() {
+        addView(createExplanatoryView(R.string.unable_play_video));
     }
+
+
+
+
 
 
 }
