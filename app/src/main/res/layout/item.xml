@@ -15,15 +15,22 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <io.github.meness.timelinepostcontainer.TimelinePostContainer
-        android:id="@+id/timelinePostContainer"
+    <data>
+
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-    </io.github.meness.timelinepostcontainer.TimelinePostContainer>
+        <io.github.meness.timelinepostcontainer.TimelinePostContainer
+            android:id="@+id/timelinePostContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</LinearLayout>
+        </io.github.meness.timelinepostcontainer.TimelinePostContainer>
+
+    </LinearLayout>
+</layout>

@@ -16,27 +16,22 @@
 
 package io.github.meness.timelinepostcontainer.app;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.github.meness.timelinepostcontainer.InitClass;
 import io.github.meness.timelinepostcontainer.RecyclerPauseOnScrollListener;
+import io.github.meness.timelinepostcontainer.app.databinding.SampleTwoBinding;
 
 public class SampleTwoActivity extends AppCompatActivity {
-    @BindView(R.id.recyclerView)
-    public RecyclerView recyclerView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sample_two);
-        ButterKnife.bind(this);
+        SampleTwoBinding binding = DataBindingUtil.setContentView(this,R.layout.sample_two);
 
         FastItemAdapter<SampleItem> adapter = new FastItemAdapter<>();
 
@@ -45,9 +40,9 @@ public class SampleTwoActivity extends AppCompatActivity {
             adapter.add(item.setThumbnail("https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=600&h=600").setVideoPath("http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_2mb.mp4"));
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addOnScrollListener(new RecyclerPauseOnScrollListener(InitClass.imageLoader(this), false, true));
-        recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setHasFixedSize(true);
+        binding.recyclerView.addOnScrollListener(new RecyclerPauseOnScrollListener(InitClass.imageLoader(this), false, true));
+        binding.recyclerView.setAdapter(adapter);
     }
 }

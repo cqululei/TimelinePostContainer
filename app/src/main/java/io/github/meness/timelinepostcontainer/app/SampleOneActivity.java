@@ -16,26 +16,21 @@
 
 package io.github.meness.timelinepostcontainer.app;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.github.meness.timelinepostcontainer.TimelinePostContainer;
 import io.github.meness.timelinepostcontainer.Type;
+import io.github.meness.timelinepostcontainer.app.databinding.ItemBinding;
 
 public class SampleOneActivity extends AppCompatActivity {
-    @BindView(R.id.timelinePostContainer)
-    public TimelinePostContainer timelinePostContainer;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.item);
-        ButterKnife.bind(this);
+        ItemBinding binding = DataBindingUtil.setContentView(this,R.layout.item);
 
-        timelinePostContainer.setImagePath("https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=600&h=600");
-        timelinePostContainer.setVideoPath("http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_2mb.mp4");
-        timelinePostContainer.build(Type.VIDEO);
+        binding.timelinePostContainer.setImagePath("https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=600&h=600");
+        binding.timelinePostContainer.setVideoPath("http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_2mb.mp4");
+        binding.timelinePostContainer.build(Type.VIDEO);
     }
 }
