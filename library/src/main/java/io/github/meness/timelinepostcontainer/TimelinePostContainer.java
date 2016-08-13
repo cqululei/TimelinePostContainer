@@ -207,7 +207,13 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     }
 
     public TimelinePostContainer setVideoPath(HttpProxyCacheServer  proxyCacheServer, String videoPath) {
-        mVideoPath = proxyCacheServer.getProxyUrl(mVideoPath);
+        mVideoPath = proxyCacheServer.getProxyUrl(videoPath);
+
+        return this;
+    }
+
+    public TimelinePostContainer setVideoPath( String videoPath) {
+        mVideoPath = videoPath;
 
         return this;
     }
