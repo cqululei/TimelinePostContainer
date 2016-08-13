@@ -457,8 +457,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         view.setClickable(true);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                removeView(view);
+            public void onClick(View v) {
+                removeView(v);
                 displayImage();
             }
         });
