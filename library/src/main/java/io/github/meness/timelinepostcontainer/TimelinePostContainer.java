@@ -68,17 +68,17 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
 
     public TimelinePostContainer(Context context) {
         super(context);
-        initProperties();
+        initProperties(context);
     }
 
-    private void initProperties() {
-        mGestureDetector = new GestureDetector(getContext(), new GestureListener());
+    private void initProperties(Context context) {
+        mGestureDetector = new GestureDetector(context, new GestureListener());
     }
 
     public TimelinePostContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
         initAttrs(context, attrs, 0, 0);
-        initProperties();
+        initProperties(context);
     }
 
     private void initAttrs(Context context, AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
@@ -99,14 +99,14 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
     public TimelinePostContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttrs(context, attrs, defStyleAttr, 0);
-        initProperties();
+        initProperties(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TimelinePostContainer(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initAttrs(context, attrs, defStyleAttr, defStyleRes);
-        initProperties();
+        initProperties(context);
     }
 
     public TimelinePostContainer setImageClickListener(IImageClickListener listeners) {
