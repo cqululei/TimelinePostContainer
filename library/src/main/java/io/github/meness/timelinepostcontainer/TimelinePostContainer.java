@@ -41,6 +41,7 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 
 import io.github.meness.timelinepostcontainer.interfaces.IImageClickListener;
@@ -205,11 +206,8 @@ public class TimelinePostContainer extends FrameLayout implements IListener, Vie
         return mVideoPath;
     }
 
-    public TimelinePostContainer setVideoPath(String videoPath) {
-        // ISSUE: https://github.com/danikula/AndroidVideoCache/issues/60
-        /*HttpProxyCacheServer proxy = MyApplication.getProxy(getContext());
-        this.mVideoPath = proxy.getProxyUrl(mVideoPath);*/
-        mVideoPath = videoPath;
+    public TimelinePostContainer setVideoPath(HttpProxyCacheServer  proxyCacheServer, String videoPath) {
+        mVideoPath = proxyCacheServer.getProxyUrl(mVideoPath);
 
         return this;
     }
