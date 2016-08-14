@@ -37,7 +37,7 @@ public class SampleTwoActivity extends AppCompatActivity {
 
         SampleItem item = new SampleItem();
         for (int i = 0; i < 10; i++) {
-            adapter.add(item.setThumbnail("https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=600&h=600").setVideoPath("http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_2mb.mp4"));
+            adapter.add(item.setThumbnail("https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=600&h=600").setVideoPath("http://html5demos.com/assets/dizzy.mp4"));
         }
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));

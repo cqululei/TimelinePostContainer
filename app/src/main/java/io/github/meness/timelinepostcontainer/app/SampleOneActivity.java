@@ -30,7 +30,7 @@ public class SampleOneActivity extends AppCompatActivity {
         ItemBinding binding = DataBindingUtil.setContentView(this,R.layout.item);
 
         binding.timelinePostContainer.setImagePath("https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=600&h=600");
-        binding.timelinePostContainer.setVideoPath("http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_2mb.mp4");
+        binding.timelinePostContainer.setVideoPath("http://html5demos.com/assets/dizzy.mp4");
         binding.timelinePostContainer.build(Type.VIDEO);
     }
 }
